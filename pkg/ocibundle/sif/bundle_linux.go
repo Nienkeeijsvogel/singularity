@@ -12,7 +12,8 @@ import (
 	"path/filepath"
 	"strings"
 	"syscall"
-
+        "github.com/golang/glog"
+	
 	imageSpecs "github.com/opencontainers/image-spec/specs-go/v1"
 	specs "github.com/opencontainers/runtime-spec/specs-go"
 	"github.com/sylabs/singularity/internal/pkg/runtime/engine/config/oci/generate"
@@ -129,6 +130,7 @@ func (s *sifBundle) Create(ociConfig *specs.Spec) error {
 	defer loopCloser.Close()
 
 	rootFs := tools.RootFs(s.bundlePath).Path()
+	glog.V(5).Infof("RootFs %s", rootFs)
 	if err := syscall.Mount(loop, rootFs, "squashfs", syscall.MS_RDONLY, ""); err != nil {
 		tools.DeleteBundle(s.bundlePath)
 		return fmt.Errorf("failed to mount SIF partition: %s", err)
